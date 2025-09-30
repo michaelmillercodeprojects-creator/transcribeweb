@@ -1,0 +1,253 @@
+/* Transcription Suite Styles */
+
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #2ecc71);
+    border: none;
+}
+
+.form-control {
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.alert-container {
+    position: relative;
+    z-index: 1050;
+    margin-bottom: 1rem;
+}
+
+.alert-container .alert {
+    margin-bottom: 0.5rem;
+}
+
+.alert-container .alert:last-child {
+    margin-bottom: 0;
+}
+
+/* Results section */
+.formatted-content {
+    line-height: 1.8;
+}
+
+.formatted-content h3,
+.formatted-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.formatted-content p {
+    margin-bottom: 1rem;
+}
+
+.formatted-content ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.formatted-content li {
+    margin-bottom: 0.5rem;
+}
+
+.transcript-text {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Accordion customization */
+.accordion-button {
+    font-weight: 500;
+    background-color: #f8f9fa;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+/* Feature icons */
+.fa-3x {
+    margin-bottom: 1rem;
+}
+
+/* File upload styling */
+.form-control[type="file"] {
+    padding: 0.5rem;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+/* Custom utility classes */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.border-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) 1;
+}
+
+/* Loading animations */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Status message styling */
+.status-success {
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+.status-error {
+    color: var(--danger-color);
+    font-weight: 500;
+}
+
+.status-processing {
+    color: var(--info-color);
+    font-weight: 500;
+}
+
+/* Enhanced card hover effects */
+.card-interactive {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-interactive:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* Progress indicator */
+.progress-container {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.progress-step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-step i {
+    margin-right: 0.5rem;
+    width: 1.25rem;
+    text-align: center;
+}
+
+.step-completed {
+    color: var(--success-color);
+}
+
+.step-active {
+    color: var(--info-color);
+}
+
+.step-pending {
+    color: #6c757d;
+}

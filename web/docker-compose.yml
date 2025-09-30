@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  transcription-web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./audio:/app/audio
+      - ./output:/app/output
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Optional: Add a reverse proxy (uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - ./ssl:/etc/nginx/ssl
+  #   depends_on:
+  #     - transcription-web
+  #   restart: unless-stopped

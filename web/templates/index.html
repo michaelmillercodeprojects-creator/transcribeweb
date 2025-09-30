@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">
+                <i class="fas fa-microphone-alt me-3"></i>Audio Transcription
+            </h1>
+            <p class="lead">Transform audio/video content into professional transcripts</p>
+        </div>
+
+        <!-- API Key Status Alert -->
+        <div id="api-status-alert" class="alert alert-warning d-none" role="alert">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Configuration Required:</strong> Please configure your OpenAI API key to use the transcription service.
+                </div>
+                <a href="{{ url_for('settings') }}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-cog me-1"></i>Configure Now
+                </a>
+            </div>
+        </div>
+
+        <div id="api-status-success" class="alert alert-success d-none" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Ready to go!</strong> Your OpenAI API key is configured. You can now upload files or process URLs.
+        </div>
+
+        <!-- Processing Status -->
+        <div id="processing-status" class="alert alert-info d-none" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="spinner-border spinner-border-sm me-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div>
+                    <strong>Processing...</strong>
+                    <div id="status-message">Starting transcription...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Methods -->
+        <div class="row">
+            <!-- File Upload -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-upload me-2"></i>Upload File
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Upload audio or video files for transcription and analysis.</p>
+                        
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="fileInput" class="form-label">Select File</label>
+                                <input type="file" class="form-control" id="fileInput" name="file"
+                                       accept=".mp3,.wav,.mp4,.avi,.mov,.mkv,.flv,.webm,.m4a,.aac,.ogg">
+                                <div class="form-text">
+                                    Supported formats: MP3, WAV, MP4, AVI, MOV, MKV, FLV, WebM, M4A, AAC, OGG
+                                    <br>Maximum size: 500MB
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <button type="button" class="btn btn-primary w-100" id="uploadBtn" disabled>
+                            <i class="fas fa-cloud-upload-alt me-2"></i>Upload & Process
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- URL Processing -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-link me-2"></i>Process URL
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Process audio/video from various platforms. Note: Some YouTube videos may require manual download due to anti-bot protection.</p>
+                        
+                        <div class="mb-3">
+                            <label for="urlInput" class="form-label">Video/Audio URL</label>
+                            <input type="url" class="form-control" id="urlInput" 
+                                   placeholder="https://youtube.com/watch?v=...">
+                            <div class="form-text">
+                                <strong>Works best with:</strong> Direct audio/video links, Vimeo, older YouTube videos<br>
+                                <strong>May require manual download:</strong> Recent YouTube videos (due to bot protection)<br>
+                                <small class="text-muted">Alternative: Download audio manually and use file upload above</small>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-success w-100" id="processUrlBtn" disabled>
+                            <i class="fas fa-globe me-2"></i>Process URL
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- URL Processing Help -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center" data-bs-toggle="collapse" data-bs-target="#urlHelp" role="button" aria-expanded="false">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>URL Processing Tips</strong>
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </div>
+                    <div class="collapse mt-3" id="urlHelp">
+                        <hr>
+                        <h6><i class="fas fa-check-circle text-success me-2"></i>URLs that work well:</h6>
+                        <ul class="mb-3">
+                            <li>Direct audio/video file links (.mp3, .mp4, .wav, etc.)</li>
+                            <li>Vimeo videos</li>
+                            <li>Older YouTube videos</li>
+                            <li>Podcast RSS feeds</li>
+                        </ul>
+                        
+                        <h6><i class="fas fa-exclamation-triangle text-warning me-2"></i>If YouTube URL fails:</h6>
+                        <ol>
+                            <li>Try a different YouTube video (older ones work better)</li>
+                            <li>Download the audio manually using a YouTube downloader</li>
+                            <li>Upload the downloaded file using the "Upload File" option above</li>
+                        </ol>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <strong>Why YouTube sometimes fails:</strong> YouTube has anti-bot protection that prevents automated downloads of some videos. This is a limitation of all audio extraction tools, not specific to this service.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Key Features</h3>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                    <h5>AI-Powered Analysis</h5>
+                    <p class="text-muted">Advanced GPT-4 analysis focused on investment insights and market themes</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5>Trade Ideas</h5>
+                    <p class="text-muted">Extract specific trade ideas, price targets, and investment strategies</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-envelope fa-3x text-info mb-3"></i>
+                    <h5>Email Reports</h5>
+                    <p class="text-muted">Professional HTML reports delivered directly to your inbox</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results-section" class="mt-5 d-none">
+            <h3>Results</h3>
+            <div class="accordion" id="resultsAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="analysisHeading">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#analysisCollapse">
+                            <i class="fas fa-chart-bar me-2"></i>Financial Analysis
+                        </button>
+                    </h2>
+                    <div id="analysisCollapse" class="accordion-collapse collapse show" 
+                         data-bs-parent="#resultsAccordion">
+                        <div class="accordion-body">
+                            <div id="analysis-content" class="formatted-content"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="transcriptHeading">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#transcriptCollapse">
+                            <i class="fas fa-file-text me-2"></i>Full Transcript
+                        </button>
+                    </h2>
+                    <div id="transcriptCollapse" class="accordion-collapse collapse" 
+                         data-bs-parent="#resultsAccordion">
+                        <div class="accordion-body">
+                            <div id="transcript-content" class="formatted-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
