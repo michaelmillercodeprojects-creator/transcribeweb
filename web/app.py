@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 from flask import Flask, render_template, request, jsonify, session
+import flask
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -43,6 +44,25 @@ def allowed_file(filename):
 def index():
     """Main page"""
     return render_template('index.html')
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Transcription Web Application is running',
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/debug')
+def debug_info():
+    """Debug information endpoint"""
+    return jsonify({
+        'flask_version': flask.__version__,
+        'routes': [str(rule) for rule in app.url_map.iter_rules()],
+        'upload_folder': str(app.config['UPLOAD_FOLDER']),
+        'max_content_length': app.config['MAX_CONTENT_LENGTH']
+    })
 
 @app.route('/settings')
 def settings():
@@ -436,6 +456,32 @@ if __name__ == '__main__':
     # Create uploads directory if it doesn't exist
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
-    # Run the app
+    # Get port from environment or use default
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    
+    # Determine if we're in production
+    is_production = os.environ.get('FLASK_ENV') == 'production' or os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RENDER')
+    
+    print(f"🚀 Starting Transcription Web Application")
+    print(f"📁 Upload folder: {app.config['UPLOAD_FOLDER']}")
+    print(f"🌐 Server will be available at: http://0.0.0.0:{port}")
+    print(f"🔧 Environment: {'Production' if is_production else 'Development'}")
+    
+    # Run the app with appropriate configuration
+    if is_production:
+        # Production settings
+        app.run(
+            host='0.0.0.0',
+            port=port,
+            debug=False,
+            threaded=True
+        )
+    else:
+        # Development settings
+        app.run(
+            host='0.0.0.0',
+            port=port,
+            debug=True,
+            threaded=True,
+            use_reloader=False
+        )
