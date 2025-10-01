@@ -2,9 +2,10 @@ services:
   - type: web
     name: transcribeweb
     env: python
+    runtime: python
     rootDir: web
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
     envVars:
       - key: OPENAI_API_KEY
         sync: false
